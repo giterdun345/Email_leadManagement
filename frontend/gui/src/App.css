@@ -1,0 +1,26 @@
+.logo{
+  margin: 25px 0 50px 15px;
+  color: white;
+}
+
+.headerComponents{
+  display: flex;
+  flex-flow: row no-wrap;
+  justify-content: flex-end;
+  margin-right: 50px;
+}
+
+.searchbar{
+  color:white;
+}
+
+.logoutButton{
+  margin-left: 500px;
+}
+
+.loginPage{
+  height: 100vh;
+  margin: 0 auto;
+  text-align: center;
+  background-color: #BABABA;
+}
