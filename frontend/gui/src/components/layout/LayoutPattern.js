@@ -9,6 +9,7 @@ import {
   ApiOutlined,
   AimOutlined,
   FileAddOutlined,
+  UserAddOutlined,
 } from '@ant-design/icons';
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -54,7 +55,12 @@ const LayoutPattern = (props)=>{
               Connections
             </Link>
           </Menu.Item>
-          <Menu.Item key="7" icon={<FileAddOutlined />}>
+          <Menu.Item key="7" icon={<UserAddOutlined />}>
+              <Link to='/addTarget'>
+                Add Target
+              </Link>
+            </Menu.Item>
+          <Menu.Item key="8" icon={<FileAddOutlined />}>
             <Link to='/file_upload'>
               Upload CSV
             </Link>

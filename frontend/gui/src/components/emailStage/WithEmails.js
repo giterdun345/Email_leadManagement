@@ -58,18 +58,30 @@ const columns = [
     key: 'followup_sent' 
   },
   {
+    title: 'ID',
+    width: 75,
+    dataIndex: 'key',
+    key: 'id',
+  },
+  {
     title: 'Edit',
     key: 'operationEdit',
     fixed: 'right',
     width: 75,
-    render: () => <button>Edit</button>,
+    render: () => 
+      <Button type="dashed">
+        Edit
+      </Button>,
   },
   {
     title: 'Delete',
     key: 'operationDelete',
     fixed: 'right',
     width: 100,
-    render: () => <button>Delete</button>,
+    render: () => 
+      <Button type="dashed">
+        Delete
+      </Button>,
   }
 ];
 

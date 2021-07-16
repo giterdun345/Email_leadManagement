@@ -1,222 +1,232 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import { Table, Input, Button, Space  } from 'antd';
-import Highlighter from 'react-highlight-words';
-import { SearchOutlined } from '@ant-design/icons';
+import { Table, Button, Space, Popconfirm, Form } from 'antd';
+import EditableCell from './EditableCell'
 
-const data = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edward Coliglio ${i}`,
-    company: 'Robert Half',
-    category: 'Angel',
-    email: `angelInvestor@angelInvestor.com`,
-    
-  });
-}
+import originData from './DummyData'
 
-data.push({
-  key: 4,
-  name: `Steven Zimba`,
-  company: 'George and Associates',
-  category: 'VC',
-  email: `vcCompany@vcCompany.com`,
-})
+const WithoutEmails = () => {
+  const [form] = Form.useForm();
+  const [data, setData] = useState(originData);
+  // editingKey is the id of the target 
+  const [editingKey, setEditingKey] = useState('');
 
-const WithoutEmails=()=>{
-  // handles search functions of table 
-  const [searchText, setSearchText] = useState('')
-  const [searchedColumn, setSearchedColumn] = useState()
-  const searchInput= useRef()
+  const isEditing = (record) => record.key === editingKey;
 
-  // handling fetched data 
-  const [dataWithout, setDataWithout] = useState(data)
+  const edit = (record) => {
+    // key from data base is used to not duplicate setFieldsValue 
+    form.setFieldsValue({
+      name:'',
+      company:'',
+      category:'',
+      email:'',
+      twitter:'',
+      linkedin:'',
+      angel:'',
+      crunchbase:'',
+      date_created:'',
+      id:'',
+      ...record,
+    });
+    setEditingKey(record.key);
+  };
 
+  const cancel = () => {
+    setEditingKey('');
+  };
+
+  const save = async (key) => {
+    try {
+      const row = await form.validateFields();
+      await axios.put(`http://localhost:8000/api/target/${key}/`, row)
+      .then(res=> console.log(res))
+      setEditingKey('')
+    } catch (errInfo) {
+      alert('Edit Failed:', errInfo);
+    }
+  };
+
+  const handleDelete= async (key)=>{
+      await axios.delete(`http://localhost:8000/api/target/${key}/`)
+      .catch(error => {
+          console.error('Delete Error:', error);
+      });
+    } 
   
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0])
-    setSearchedColumn(dataIndex)
-  };
-
-  const handleReset = clearFilters => {
-    clearFilters();
-    setSearchText('')
-  };
-
-  const getColumnSearchProps = dataIndex => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText(selectedKeys[0])
-              setSearchedColumn(dataIndex)
-            }}
-          >
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
-        : '',
-    onFilterDropdownVisibleChange: visible => {
-      if (visible) {
-        setTimeout(() => searchInput.current.select(), 100);
-      }
-    },
-    render: text =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
-  });
-
-  const columns = [
+  const withoutColumns = [
     {
       title: 'Full Name',
-      width: 100,
+      width: 200,
       dataIndex: 'name',
-      key: 'name',
       fixed: 'left',
-      ...getColumnSearchProps('name')
+      editable: true,
+      // ...getColumnSearchProps('name')
     },
     {
       title: 'Company',
       width: 100,
       dataIndex: 'company',
-      key: 'company',
       fixed: 'left',
-      ...getColumnSearchProps('company')
+      editable: true,
+      // ...getColumnSearchProps('company')
     },
     {
       title: 'Category',
       dataIndex: 'category',
-      key: 'category',
       width: 100,
-      ...getColumnSearchProps('category')
+      editable: true,
+      // ...getColumnSearchProps('category')
     },
     {
       title: 'Email',
       dataIndex: 'email',
-      key: 'email',
       width: 150,
-      ...getColumnSearchProps('email')
+      editable: true,
+      // ...getColumnSearchProps('email')
     },
     {
       title: 'Twitter',
       dataIndex: 'twitter',
-      key: 'twitter',
       width: 150,
-      ...getColumnSearchProps('twitter')
+      editable: true,
+      // ...getColumnSearchProps('twitter')
     },
     {
       title: 'LinkedIn',
       dataIndex: 'linkedin',
-      key: 'linkedin',
       width: 150,
-      ...getColumnSearchProps('linkedin')
+      editable: true,
+      // ...getColumnSearchProps('linkedin')
     },
     {
       title: 'Angel.co',
       dataIndex: 'angel',
-      key: 'angel',
       width: 150,
-      ...getColumnSearchProps('angel')
+      editable: true,
+      // ...getColumnSearchProps('angel')
     },
     {
       title: 'Crunchbase',
       dataIndex: 'crunchbase',
-      key: 'crunchbase',
       width: 150,
-      ...getColumnSearchProps('crunchbase')
+      editable: true,
+      // ...getColumnSearchProps('crunchbase')
     },
-    { 
-      title: 'Date Created',
-      dataIndex: 'date_created',
-      key: 'date_created',
-      ...getColumnSearchProps('date_created') 
+    // { 
+    //   title: 'Date Created',
+    //   dataIndex: 'date_created',
+    //   editable: true,
+    //   // ...getColumnSearchProps('date_created') 
+    // },
+    {
+      title: 'ID',
+      width: 75,
+      dataIndex: 'key',
     },
     {
-      title: 'Edit',
+      title: 'Update',
       key: 'operationEdit',
       fixed: 'right',
-      width: 75,
-      render: () => <button>Edit</button>,
+      width: 100,
+      render: (_, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Button
+              type='link'
+              onClick={() => save(record.key)}
+              style={{
+                marginRight: 8,
+              }}
+            >
+              Save
+            </Button>
+              <br/>
+           <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+              <Button type='link'>Cancel</Button>
+           </Popconfirm>
+           </span>
+        ) : (
+          <Button type='dashed' disabled={editingKey !== ''} onClick={() => edit(record)}>
+            Edit
+          </Button>
+        );
+      },
     },
     {
       title: 'Delete',
       key: 'operationDelete',
       fixed: 'right',
       width: 100,
-      render: () => <button>Delete</button>,
+      render: (text, record) => (
+        <Space size="middle">
+          <Button danger type='dashed' onClick={e => handleDelete(record.key)}>
+            Delete
+          </Button>
+        </Space>
+      )
     },
-    {
-      title: 'Validate',
-      key: 'operationValidate',
-      fixed: 'right',
-      width: 100,
-      render: () => <button>Validate</button>,
-    }
+    // {
+    //   title: 'Validate',
+    //   key: 'operationValidate',
+    //   fixed: 'right',
+    //   width: 100,
+    //   render: () =>
+    //     <Button type="dashed" onClick={handleValidate}>
+    //       Validate
+    //     </Button>,
+    // }
   ];
-  
+
+  const mergedColumns = withoutColumns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        // inputType: col.dataIndex === 'age' ? 'number' : 'text',
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
+
   const fetchList = async ()=>{
     await axios.get('http://localhost:8000/api/withoutEmail')
-    .then(res => setDataWithout(res.data))
+    .then(res => setData(res.data))
+    .catch(error => console.log("GET ERROR", error))
   }
+
   useEffect(()=>{
     fetchList()
-  }, [])
+  }, [data])
 
-  return(
-    <div>
-      <h1 style={{textAlign:'center'}}>Targets With No Emails</h1>
+  return (
+    <Form form={form} component={false} name='withoutEmails'>
       <Table
-        columns={columns}
-        dataSource={dataWithout}
+        components={{
+          body: {
+            cell: EditableCell,
+          },
+        }}
+        bordered
+        dataSource={data}
+        rowKey={record => record.id}
+        columns={mergedColumns}
+        rowClassName="editable-row"
+        pagination={{
+          onChange: cancel,
+        }}
         scroll={{ x: 1500 }}
-      //  Can add a summary to the bottom of the table 
         sticky
       />
-    </div>
-   
-  )
-}
+    </Form>
+  );
+};
+
 
 export default WithoutEmails
-
-
-// takes in the data stored in state, filters the data by email validation uses filteredTable state, export filteredTablestate to csv to google sheets,

@@ -16,6 +16,7 @@ class Target(models.Model):
     date_sent = models.DateTimeField(null= True, editable=True, blank=True)
     email_sent = models.BooleanField(default=False)
     followup_sent = models.BooleanField(default=False)
+    key = models.AutoField(primary_key=True, unique=True)
 
     def __str__(self):
         return self.name
