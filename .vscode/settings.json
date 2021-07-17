@@ -1,0 +1,21 @@
+{
+  "git.ignoreLimitWarning": true
+} // {
+//   "python.pythonPath": "C:\\Users\\johnm\\Desktop\\code\\leadManagement\\backend\\.env\\Scripts\\python", 
+//   "editor.formatOnSave": true,
+//   "python.linting.pycodestyleEnabled": true,
+//   "python.linting.pylintPath": "pylint",
+//   "python.linting.pylintArgs": [
+//       "--load-plugins",
+//       "pylint_django",
+//       "--disable={c0301}"
+//   ],
+//   "python.linting.pylintEnabled": true, 
+//   "python.terminal.activateEnvironment": true, 
+//   "[python]": {
+//     "editor.rulers": [900]
+// },
+// "python.linting.pycodestyleArgs": [
+//     "--ignore=E501" 
+// ]
+// }

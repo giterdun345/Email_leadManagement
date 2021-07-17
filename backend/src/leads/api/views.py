@@ -2,8 +2,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from leads.models import Target
 from .serializers import TargetSerializer
+from rest_framework_bulk import (
+    ListBulkCreateUpdateDestroyAPIView,
+    BulkModelViewSet
+)
 
-class TargetViewSet(viewsets.ModelViewSet):
+# viewsets.ModelViewSet, removed for bulk
+class TargetView(BulkModelViewSet):
   """Retrieves all of the targets for upload from scraper and for additional use in gui"""
   queryset= Target.objects.all()
   serializer_class= TargetSerializer

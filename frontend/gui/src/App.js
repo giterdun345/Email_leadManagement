@@ -8,8 +8,9 @@ import 'antd/dist/antd.css'
 // components 
 import LayoutPattern from './components/layout/LayoutPattern'
 import LoginPage from './components/utility_pages/LoginPage'
-import FileUpload from './components/utility_pages/FileUpload'
+// import FileUpload from './components/utility_pages/FileUpload'
 import AddTarget from './components/add_target/AddTarget';
+import UploadCSV from './components/upload_csv/UploadCSV';
 
 const Dashboard = lazy(()=> import('./components/dashboard/Dashboard'))
 const EmailedList = lazy(()=> import('./components/emailedList/EmailedList'))
@@ -41,7 +42,7 @@ const App = ()=> {
                 <Route path='/withoutEmails' component={WithoutEmails} />
                 <Route exact path='/connections' component={Connections} />
                 <Route exact path= '/addTarget' component={AddTarget} />
-                <Route exact path='/file_upload' component={FileUpload} />
+                <Route exact path='/file_upload' component={UploadCSV} />
               </LayoutPattern>
               {/* <Route exact path='/ingredients' component={IngredientsList} />
               <Route exact path='/ingredients-detail/:ingredient' component={IngredientDetail} /> */}
