@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import { Table, Button, Space, Popconfirm, Form } from 'antd';
+// antd components 
+import { Button, Space, Popconfirm, Form } from 'antd';
+import { Table } from "ant-table-extensions";
+import { SearchOutlined }from '@ant-design/icons';
 import EditableCell from './EditableCell'
 
 import originData from './DummyData'
@@ -8,7 +11,7 @@ import originData from './DummyData'
 const WithoutEmails = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState(originData);
-  // editingKey is the id of the target 
+  // editingKey is the id of the target used in dev
   const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record) => record.key === editingKey;
@@ -36,18 +39,29 @@ const WithoutEmails = () => {
   };
 
   const save = async (key) => {
-    try {
       const row = await form.validateFields();
       await axios.put(`http://localhost:8000/api/target/${key}/`, row)
-      .then(res=> console.log(res))
-      setEditingKey('')
-    } catch (errInfo) {
-      alert('Edit Failed:', errInfo);
-    }
+      .then(res=>{
+        alert(`${res.status}, ${res.statusText}: ${res.data.name}`)
+        setEditingKey('')
+      })
+      .catch(error =>{
+        console.log(error.request.response)
+        alert(`Put Fail: ${error.request.response}`)
+      })
+  
   };
 
-  const handleDelete= async (key)=>{
-      await axios.delete(`http://localhost:8000/api/target/${key}/`)
+  const handleDelete= async (record)=>{
+      await axios.delete(`http://localhost:8000/api/target/${record.key}/`)
+      .then(res => {
+        let dataCopy = [...data]
+        let recordIndex = dataCopy.indexOf(record)
+         if(recordIndex > -1){
+            dataCopy.splice(recordIndex, 1)
+            setData(dataCopy)
+         }
+      })
       .catch(error => {
           console.error('Delete Error:', error);
       });
@@ -60,7 +74,6 @@ const WithoutEmails = () => {
       dataIndex: 'name',
       fixed: 'left',
       editable: true,
-      // ...getColumnSearchProps('name')
     },
     {
       title: 'Company',
@@ -68,56 +81,43 @@ const WithoutEmails = () => {
       dataIndex: 'company',
       fixed: 'left',
       editable: true,
-      // ...getColumnSearchProps('company')
     },
     {
       title: 'Category',
       dataIndex: 'category',
       width: 100,
       editable: true,
-      // ...getColumnSearchProps('category')
     },
     {
       title: 'Email',
       dataIndex: 'email',
       width: 150,
       editable: true,
-      // ...getColumnSearchProps('email')
     },
     {
       title: 'Twitter',
       dataIndex: 'twitter',
       width: 150,
       editable: true,
-      // ...getColumnSearchProps('twitter')
     },
     {
       title: 'LinkedIn',
       dataIndex: 'linkedin',
       width: 150,
       editable: true,
-      // ...getColumnSearchProps('linkedin')
     },
     {
       title: 'Angel.co',
       dataIndex: 'angel',
       width: 150,
       editable: true,
-      // ...getColumnSearchProps('angel')
     },
     {
       title: 'Crunchbase',
       dataIndex: 'crunchbase',
       width: 150,
       editable: true,
-      // ...getColumnSearchProps('crunchbase')
     },
-    // { 
-    //   title: 'Date Created',
-    //   dataIndex: 'date_created',
-    //   editable: true,
-    //   // ...getColumnSearchProps('date_created') 
-    // },
     {
       title: 'ID',
       width: 75,
@@ -160,7 +160,7 @@ const WithoutEmails = () => {
       width: 100,
       render: (text, record) => (
         <Space size="middle">
-          <Button danger type='dashed' onClick={e => handleDelete(record.key)}>
+          <Button danger type='dashed' onClick={e => handleDelete(record)}>
             Delete
           </Button>
         </Space>
@@ -203,9 +203,11 @@ const WithoutEmails = () => {
 
   useEffect(()=>{
     fetchList()
-  }, [data])
+  }, [])
 
   return (
+    <div>
+      <h1 styles={{textAlign:'center'}}>Targets Without Emails</h1>
     <Form form={form} component={false} name='withoutEmails'>
       <Table
         components={{
@@ -215,7 +217,7 @@ const WithoutEmails = () => {
         }}
         bordered
         dataSource={data}
-        rowKey={record => record.id}
+        rowKey={record => record.key}
         columns={mergedColumns}
         rowClassName="editable-row"
         pagination={{
@@ -223,8 +225,24 @@ const WithoutEmails = () => {
         }}
         scroll={{ x: 1500 }}
         sticky
+        // extensions 
+        exportable
+        searchable
+        searchableProps={{
+          fuzzySearch: true,
+          inputProps: {
+            placeholder: "Search",
+            prefix: <SearchOutlined />,
+          },
+          fuzzyProps: {
+            treshold: 0.0,
+            distance: 0,
+            isCaseSensitive: false
+          }
+        }}
       />
     </Form>
+    </div>
   );
 };
 

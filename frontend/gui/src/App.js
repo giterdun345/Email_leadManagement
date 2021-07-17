@@ -9,7 +9,7 @@ import 'antd/dist/antd.css'
 import LayoutPattern from './components/layout/LayoutPattern'
 import LoginPage from './components/utility_pages/LoginPage'
 import FileUpload from './components/utility_pages/FileUpload'
-import AddTarget from './components/emailStage/AddTarget';
+import AddTarget from './components/add_target/AddTarget';
 
 const Dashboard = lazy(()=> import('./components/dashboard/Dashboard'))
 const EmailedList = lazy(()=> import('./components/emailedList/EmailedList'))

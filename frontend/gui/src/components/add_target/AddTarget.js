@@ -1,23 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios'
 import { Form, Input, Button } from 'antd';
-
-const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
-};
+// HELPERS 
+import { layout, tailLayout, onFinish, onFinishFailed, onReset,   } from './helpers'
 
 const AddTarget = () => {
+  // manually add a target to api/target/; td: error and success messages 
+
   const [inputs, setInputs] = useState({
     name: '',
     company:'',
@@ -31,31 +20,17 @@ const AddTarget = () => {
     email_confirmed:false,
     email_sent: false,
     followup_sent: false,
+    // left out for auto create 
     // date_sent:''
   })
-
-  const [form] = Form.useForm();
    
-  const onFinish = (values) => {
-    console.log(values);
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-    alert('Failed: ', errorInfo)
-  };
-
-  const onReset = () => {
-    form.resetFields();
-  };
-
   const handleChange= (e, inputName)=>{
     // e.target.defaultValue is a workaround used with antd forms also target.value.value
     setInputs({
       ...inputs,
       [inputName] : e.target.defaultValue,
     });
-    console.log(inputs)
+    // console.log(inputs)
   } 
 
   const handleFormSubmit = (event)=>{
@@ -63,18 +38,18 @@ const AddTarget = () => {
     console.log(inputs)
     axios.post('http://localhost:8000/api/target/', inputs)
     .then(res => {
-      console.log(res)
+      // console.log(res)
       alert(`${res.status}, ${res.statusText}: ${res.data.name}`)
-      onReset()
-    }
-      
-    )
+      onReset(form)
+    })
     .catch(error => {
       console.log(error.request.response)
-      alert(`Post Fail: ${error.request.response}`)}
-      )
+      alert(`Post Fail: ${error.request.response}`)
+    })
   }
 
+  const [form] = Form.useForm();
+  
   return ( 
     <Form 
       {...layout} 
