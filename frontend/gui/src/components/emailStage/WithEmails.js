@@ -22,6 +22,7 @@ const WithEmails = () => {
       ...record,
     });
     setEditingKey(record.key);
+    
   };
 
   const cancel = () => {
@@ -39,6 +40,7 @@ const WithEmails = () => {
         console.log(error.request.response)
         alert(`Put Fail: ${error.request.response}`)
       })
+      fetchList()
   };
 
   const handleDelete= async (record)=>{
@@ -93,7 +95,7 @@ const WithEmails = () => {
       key: 'email_confirmed',
       width: 150,
       editable:true,
-      // render: bool=> bool.toString(),
+      render: bool=> bool ? 'Confirmed': 'Not Confirmed',
     },
     {
       title: 'ID',

@@ -23,6 +23,7 @@ const WithoutEmails = () => {
       company:'',
       category:'',
       email:'',
+      personal:'',
       twitter:'',
       linkedin:'',
       angel:'',
@@ -44,6 +45,7 @@ const WithoutEmails = () => {
       .then(res=>{
         alert(`${res.status}, ${res.statusText}: ${res.data.name}`)
         setEditingKey('')
+        fetchList()
       })
       .catch(error =>{
         console.log(error.request.response)
@@ -91,6 +93,12 @@ const WithoutEmails = () => {
     {
       title: 'Email',
       dataIndex: 'email',
+      width: 150,
+      editable: true,
+    },
+    {
+      title: 'Personal',
+      dataIndex: 'personal',
       width: 150,
       editable: true,
     },
@@ -197,7 +205,10 @@ const WithoutEmails = () => {
 
   const fetchList = async ()=>{
     await axios.get('http://localhost:8000/api/withoutEmail')
-    .then(res => setData(res.data))
+    .then(res => {
+      setData(res.data)
+      console.log(data)
+    })
     .catch(error => console.log("GET ERROR", error))
   }
 

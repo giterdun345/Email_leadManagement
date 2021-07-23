@@ -33,6 +33,16 @@ const LayoutPattern = (props)=>{
               Dashboard
             </Link>
           </Menu.Item>
+          <Menu.Item key="7" icon={<UserAddOutlined />}>
+              <Link to='/addTarget'>
+                Add Target
+              </Link>
+            </Menu.Item>
+          <Menu.Item key="8" icon={<FileAddOutlined />}>
+            <Link to='/file_upload'>
+              Upload CSV
+            </Link>
+          </Menu.Item>
           <SubMenu key="sub2" icon={<AimOutlined />} title="Target List">
             <Menu.Item key="3">
               <Link to='/withEmails'>
@@ -53,16 +63,6 @@ const LayoutPattern = (props)=>{
           <Menu.Item key="6" icon={<ApiOutlined />}>
             <Link to='/connections'>
               Connections
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="7" icon={<UserAddOutlined />}>
-              <Link to='/addTarget'>
-                Add Target
-              </Link>
-            </Menu.Item>
-          <Menu.Item key="8" icon={<FileAddOutlined />}>
-            <Link to='/file_upload'>
-              Upload CSV
             </Link>
           </Menu.Item>
         </Menu>

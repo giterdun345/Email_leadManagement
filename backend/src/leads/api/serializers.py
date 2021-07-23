@@ -4,7 +4,7 @@ from leads.models import Target
 from rest_framework_bulk import (
     BulkListSerializer,
     BulkSerializerMixin,
-    ListBulkCreateUpdateDestroyAPIView,
+    # ListBulkCreateUpdateDestroyAPIView,
 )
 class TargetSerializer(BulkSerializerMixin, serializers.ModelSerializer):
   class Meta:
