@@ -6,9 +6,7 @@ from selenium import webdriver
 import time
 
 PATH = 'C:\Program Files (x86)/chromedriver.exe'
-# caps = webdriver.DesiredCapabilities.CHROME.copy()
-# caps['acceptInsecureCerts'] = True
-# caps['acceptSslCerts'] = True
+
 options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors-spki-list')
 options.add_argument('--ignore-certificate-errors')
@@ -25,8 +23,6 @@ driver.get("http://sslproxies.org/")
 # driver.find_element_by_xpath('/html/body/div[1]/div[3]/a').click()
 
 soup = bs(driver.page_source, 'lxml')
-
-
 # soup = bs(response.content, "html.parser")
 table = soup.find('tbody') 
 ips = table.select('tr > td')[::8]
