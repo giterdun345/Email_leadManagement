@@ -6,25 +6,31 @@ from django.views import View
 from django.http import JsonResponse
 from django.views.generic.detail import SingleObjectMixin
 import json
-import urllib3
 
-urllib3.disable_warnings()
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def scrape_proxies():
   """Obtains 100 updated proxies to be used for testing if email exists"""
-  response = requests.get("http://sslproxies.org/", verify=False) 
+  headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Accept': '*/*', 
+    'Connection': 'keep-alive'
+  }
 
+  response = requests.get("http://sslproxies.org/", headers=headers, verify=False) 
   soup = bs(response.content, "html.parser")
-  table = soup.find('tbody') 
+  table = soup.find('tbody')  
   ips = table.select('tr > td')[::8]
   ports = table.select('tr > td')[1::8]
-
-  complete_ip = []
+  
+  complete_ip = ['http://5.252.161.48:8080']
+  
   for index in range(len(ips)):
     complete_ip.append(ips[index].contents[0] + ':' + ports[index].contents[0])
   
   return complete_ip
-
 
 def variation_list(target):
   """Outputs 8 variations to be used in testing if email exists, domain and
@@ -77,13 +83,8 @@ class ValidateView(SingleObjectMixin, View):
   def post(self, request):
     unicode_data = request.body.decode('utf-8')
     targetData = json.loads(unicode_data)
-    proxy_list = scrape_proxies()
-    # proxies to make request to Real Email
-    proxies = {
-      'http': proxy_list.choice(),
-      'https': proxy_list.choice()
-    }
-    # end results to be returned to user 
+    proxies = scrape_proxies()
+
     end_results = []
 
     for target in targetData:
@@ -97,7 +98,11 @@ class ValidateView(SingleObjectMixin, View):
         response = requests.get(
           "https://isitarealemail.com/api/email/validate",
           params = {'email': email_address},
-          proxies= proxies
+          proxies= {
+            'http': choice(proxies),
+            'https': choice(proxies)
+          }, 
+          timeout= 180
         )
 
         status = response.json()['status']
@@ -120,7 +125,7 @@ class ValidateView(SingleObjectMixin, View):
           })
 
         else:
-          print("email was unknown")
+          print("email is unknown")
           end_results.append({ 
               "name":     target['name'],
               "company":  target['company'],
