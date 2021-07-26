@@ -25,8 +25,9 @@ real_response = requests.Session()
 real_response.mount("https://", adapter)
 real_response.mount("http://", adapter)
 
-
 def scrape_proxies():
+  """SCRAPES PROXIES FROM SITE USING SELENIUM TO GET PAST 
+      THE THREAT DETECTION BLOCKED LANDING PAGE """  
   PATH = 'C:\Program Files (x86)/chromedriver.exe'
 
   options = webdriver.ChromeOptions()
@@ -52,7 +53,9 @@ def scrape_proxies():
 
 
 def scrape_proxies_requests():
-  """Obtains 100 updated proxies to be used for testing if email exists"""
+  """Obtains 100 updated proxies to be used for testing if email exists using 
+  the requests library. Landing page for threat detection blocked causes error
+  """
   headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -120,6 +123,7 @@ class ValidateView(SingleObjectMixin, View):
      Rotates proxies with 100 updated IP addresses and uses
      Real Email API; 
      LIMIT: checks up to 100 emails per day per ip address
+     causing issues with max tries exceeded XXXXXXX
   """
   def post(self, request):
     unicode_data = request.body.decode('utf-8')
@@ -160,7 +164,7 @@ class ValidateView(SingleObjectMixin, View):
             status = response.json()['status']
             # sleep(20)
             if status == "valid":
-              print("email is valid")
+              print("s% is valid", email_address)
               end_results.append({ 
                   "name":     target['name'],
                   "company":  target['company'],
@@ -169,7 +173,7 @@ class ValidateView(SingleObjectMixin, View):
               })
 
             elif status == "invalid":
-              print("email is invalid")
+              print("s% is invalid", email_address)
               end_results.append({ 
                   "name":     target['name'],
                   "company":  target['company'],
@@ -178,7 +182,7 @@ class ValidateView(SingleObjectMixin, View):
               })
 
             else:
-              print("email is unknown")
+              print("s% is unknown", email_address)
               end_results.append({ 
                   "name":     target['name'],
                   "company":  target['company'],
