@@ -1,5 +1,7 @@
 # dependencies
 /node_modules
+.eslint_cache
+
 # testing
 /coverage
 # production
