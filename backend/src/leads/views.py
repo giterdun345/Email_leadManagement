@@ -1,3 +1,9 @@
+"""View takes in a csv from client with full name, company and domain
+This will put their full name and domain into ten different variations to 
+see if an email exists. Slow but mimicks human behavior. Each check utilizes
+a proxy to reduce risk of limit on RealEmail API. Proxy Scraper scrapes 100 fresh 
+IP addresses and is rotated through out each email variation check."""
+
 import requests
 from bs4 import BeautifulSoup as bs
 from random import choice
@@ -27,7 +33,10 @@ real_response.mount("http://", adapter)
 
 def scrape_proxies():
   """SCRAPES PROXIES FROM SITE USING SELENIUM TO GET PAST 
-      THE THREAT DETECTION BLOCKED LANDING PAGE """  
+      THE THREAT DETECTION BLOCKED LANDING PAGE 
+      IMPORTANT: MUST OBTAIN COOKIE BY CLICKING APPROVE IN WEBDRIVER 
+      AND RERUN VALIDATION; WORKAROUND TODO"""  
+      # path to be changed for deployment
   PATH = 'C:\Program Files (x86)/chromedriver.exe'
 
   options = webdriver.ChromeOptions()
@@ -69,9 +78,11 @@ def scrape_proxies_requests():
   ips = table.select('tr > td')[::8]
   ports = table.select('tr > td')[1::8]
   
+  # DEFAULT IP ADDRESSES LAST CHECKED 28-07-21
   complete_ip = ['http://5.252.161.48:8080', '161.117.234.195:8118']
   
   for index in range(len(ips)):
+    # create a list of scraped proxies for rotation 
     complete_ip.append(ips[index].contents[0] + ':' + ports[index].contents[0])
   
   return complete_ip
@@ -83,24 +94,25 @@ def variation_list(target):
 
   nameArr = target['name'].lower().split(' ')      
   atDomain = '@' + target['domain']
-  # combined no seperator 
+  # 1st combined no seperator 
   firstVariation = ''.join(nameArr) + atDomain
-  # combined seperator as dot  
+  # 2nd combined seperator as dot  
   secondVariation = '.'.join(nameArr) + atDomain
-  # reverse lname fname 
+  # 3rd reverse lname fname 
   thirdVariation = ''.join(nameArr[::-1]) + atDomain
-  # reverse lname fname with dot 
+  # 4th reverse lname fname with dot 
   fourthVariation = '.'.join(nameArr[::-1]) + atDomain
-  # fname first letter with lastname 
+  # 5th fname first letter with lastname 
   fnameLetter = nameArr[0][0]
   fifthVariation = fnameLetter + nameArr[1] + atDomain
-  # fname letter with lastname dot seperated 
+  # 6th fname letter with lastname dot seperated 
   sixthVariation = fnameLetter + '.' + nameArr[1] + atDomain
-  # lname letter with fname 
+  # 7th lname letter with fname 
   lnameLetter = nameArr[1][0]
   seventhVariation = lnameLetter + nameArr[0] + atDomain
-  # lname letter with fname with dot seperator
+  # 8th lname letter with fname with dot seperator
   eigthVariation = lnameLetter + '.' + nameArr[0] + atDomain
+  # 9th variation if all else fails info@domain can be used if it exists
   ninthVariation = nameArr[0] + atDomain
 
   variationObj= {
@@ -113,7 +125,7 @@ def variation_list(target):
     7: seventhVariation,
     8: eigthVariation,
     9: ninthVariation, 
-    # 10: 'info' + atDomain
+    10: 'info' + atDomain
   }
 
   return variationObj
@@ -129,7 +141,7 @@ class ValidateView(SingleObjectMixin, View):
     unicode_data = request.body.decode('utf-8')
     targetData = json.loads(unicode_data)
     proxies = scrape_proxies()
-
+    # will return end results in JSON response to client 
     end_results = []
 
     for target in targetData:
@@ -137,6 +149,8 @@ class ValidateView(SingleObjectMixin, View):
         print('Completed')
         break
 
+# problem with some firewall blocking the connections during the TLS handshake? 
+# multi threading can be used for quicker performance
       variationObj = variation_list(target)
       for email_address in variationObj.values():
         # make requests to real email import requests
@@ -144,8 +158,9 @@ class ValidateView(SingleObjectMixin, View):
         while running_check: 
           new_proxy = choice(proxies)
           print('Checking: ' + email_address + ' with ' + new_proxy)
-          # print('Checking ' + email_address)
-          response = real_response.get(
+
+          try:
+            response = real_response.get(
             "https://isitarealemail.com/api/email/validate",
             params = {'email': email_address},
             proxies= {
@@ -156,40 +171,68 @@ class ValidateView(SingleObjectMixin, View):
               'Referrer-Policy': 'strict-origin-when-cross-origin',
               'Accept': '*/*', 
             },
-            timeout= 180
-          )
+            timeout= 20
+            )
+            print('Running....')
+          except:
+            print('Excepted')
+            running_check = False
+
 
           if response.status_code == 200:
-            running_check = False
             status = response.json()['status']
             # sleep(20)
             if status == "valid":
-              print("s% is valid", email_address)
-              end_results.append({ 
+              print("is valid: ", email_address)
+              if { 
                   "name":     target['name'],
                   "company":  target['company'],
                   "category": target['category'],
-                  "email":    email_address
+                  "email":    email_address,
+                  "email_confirmed": True,
+                 } not in end_results: 
+                end_results.append({ 
+                  "name":     target['name'],
+                  "company":  target['company'],
+                  "category": target['category'],
+                  "email":    email_address,
+                  "email_confirmed": True,
               })
+              running_check = False
 
             elif status == "invalid":
-              print("s% is invalid", email_address)
-              end_results.append({ 
+              print("is invalid: ", email_address)
+              if { 
                   "name":     target['name'],
                   "company":  target['company'],
                   "category": target['category'],
                   "email":    ''
-              })
+              } not in end_results:
+                  end_results.append({ 
+                  "name":     target['name'],
+                  "company":  target['company'],
+                  "category": target['category'],
+                  "email":    ''
+                  })
+              running_check = False
 
             else:
-              print("s% is unknown", email_address)
-              end_results.append({ 
+              print("is unknown: ", email_address)
+              if { 
                   "name":     target['name'],
                   "company":  target['company'],
                   "category": target['category'],
                   "email":    ''
-              })
-            sleep(20)
+              } not in end_results:
+                  end_results.append({ 
+                  "name":     target['name'],
+                  "company":  target['company'],
+                  "category": target['category'],
+                  "email":    ''
+                  })
+              running_check = False
+
+        sleep(5)
 
     print(end_results)
     return JsonResponse(end_results, safe= False)
