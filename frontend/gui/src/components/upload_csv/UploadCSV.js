@@ -10,17 +10,7 @@ import UploadValidated from './UploadValidated'
 const UploadCSV = () => {
   const [convertedData, setConvertedData] = useState([])
   const [error, setError] = useState([])
-  const [processedData, setProcessedData] = useState([
-    {'name': 'STEVE MUNTEAN',
-     'company': 'Over Watch Capital',
-      'category': 'VC',
-       'email': ''
-    }, 
-    {'name': 'STEVE MUNTEAN',
-     'company': 'Over Watch Capital',
-     'category': 'VC',
-     'email': 'steve@overwatchcapital.com', 
-     'email_confirmed': true}])
+  const [processedData, setProcessedData] = useState([])
 
   const[loading, setLoading] = useState(false)
   // Add the file to a formData object, and set the Content-Type header to multipart/form-data.
