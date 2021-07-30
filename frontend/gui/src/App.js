@@ -18,7 +18,11 @@ const WithEmails = lazy(()=> import('./components/emailStage/WithEmails'))
 const WithoutEmails = lazy(()=> import('./components/emailStage/WithoutEmails'))
 const Connections = lazy(()=> import('./components/connections/Connections'))
 
+
+
 const App = ()=> {
+// ALL FORMATTING OF COMPONENTS USING ANT DESIGN IS ACCORDING TO THE DOCS; 
+// IT'S NOT PRETTY BUT MAKES WORKFLOW FAST 
 
   // const queryClient = new QueryClient({
   //   defaultOptions: {
