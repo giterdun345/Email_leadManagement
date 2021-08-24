@@ -2,25 +2,27 @@
 
 <!-- <img src="Lem_Pattern.png" alt='Lem Pattern'> -->
 
-[![Contributors][contributors-shield]][https://github.com/giterdun345/EmailleadManagement/contributors/]
-[![Forks][forks-shield]][https://github.com/giterdun345/EmailleadManagement/forks/]
-[![Stargazers][stars-shield]][https://github.com/giterdun345/EmailleadManagement/stargazers]
-[![Issues][issues-shield]][https://github.com/giterdun345/EmailleadManagement/issues/]
-[![MIT License][license-shield]][https://github.com/giterdun345/EmailleadManagement/blob/master/LICENSE]
-[![LinkedIn][linkedin-shield]][https://linkedin.com/in/jm-ketterer]
+[![Contributors](https://img.shields.io/github/contributors/giterdun345/Email_leadManagement.svg)](https://github.com/giterdun345/Email_leadManagement/contributors/)
+[![Forks](https://img.shields.io/github/forks/giterdun345/Email_leadManagement)](https://github.com/giterdun345/Email_leadManagement/forks/)
+[![Stargazers](https://img.shields.io/github/stars/giterdun345/Email_leadManagement?style=social&label=Star&maxAge=2592000)](https://github.com/giterdun345/Email_leadManagement/stargazers)
+[![Issues](https://img.shields.io/github/issues/giterdun345/Email_leadManagement)](https://github.com/giterdun345/Email_leadManagement/issues/)
+[![MIT License](https://img.shields.io/github/license/giterdun345/Email_leadManagement)](https://github.com/giterdun345/Email_leadManagement/blob/master/LICENSE)
+[![LinkedIn][linkedin-shield]](https://linkedin.com/in/jm-ketterer)
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <a href="https://github.com/giterdun345/EmailleadManagement">
-    ![alt text](https://github.com/giterdun345/EmailleadManagement/blob/master/LemPattern.png?raw=true)
-
+<!--     <img src="https://github.com/giterdun345/EmailleadManagement/blob/master/LemPattern.png"> -->
+![Screenshot](Lem_Pattern.png)
   </a>
 
   <h3 align="center">Lead and Email Management</h3>
 
   <p align="center">
     This is a CRM built with email capabilities, web scraping and scheduling. The app contains views with a rotating proxy server to check if an email exists, a web scraper that will search a website and its links for emails and a connection to AWS SES/SNS to send emails and recieve the analytics such as bounce rate, black listed emails and complaints. 
+    <br />
+    I am in need of some help putting the last bit together and am open to collaboration!!
     <br />
     <a href="https://github.com/giterdun345/Emaillead_Management"><strong>Explore the docs »</strong></a>
     <br />
