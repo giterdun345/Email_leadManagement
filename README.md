@@ -1,4 +1,4 @@
-#Lead Management
+# Lead and Email Management / CRM
 
 <!-- <img src="Lem_Pattern.png" alt='Lem Pattern'> -->
 
@@ -12,26 +12,20 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/giterdun345/EmailleadManagement">
-<!--     <img src="https://github.com/giterdun345/EmailleadManagement/blob/master/LemPattern.png"> -->
-![Screenshot](Lem_Pattern.png)
-  </a>
-
   <h3 align="center">Lead and Email Management</h3>
-
   <p align="center">
-    This is a CRM built with email capabilities, web scraping and scheduling. The app contains views with a rotating proxy server to check if an email exists, a web scraper that will search a website and its links for emails and a connection to AWS SES/SNS to send emails and recieve the analytics such as bounce rate, black listed emails and complaints. 
+    This is a CRM built with email capabilities, web scraping and scheduling. The app contains views with a rotating proxy server to check if an email exists, a web scraper that w     will search a website and its links for emails and a connection to AWS SES/SNS to send emails and recieve the analytics such as bounce rate, black listed emails and     complaints. This is created for someone who wanted to find investors for a startup company. I am not a fan of spamming so please do not use this for such purposes.
     <br />
     I am in need of some help putting the last bit together and am open to collaboration!!
     <br />
-    <a href="https://github.com/giterdun345/Emaillead_Management"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/giterdun345/Email_lead_Management"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/giterdun345/Emaillead_Management">View Demo</a>
+    <a href="https://github.com/giterdun345/Email_leadManagement">View Demo (soon)</a>
     ·
-    <a href="https://github.com/giterdun345/Emaillead_Management/issues">Report Bug</a>
+    <a href="https://github.com/giterdun345/Email_leadManagement/issues">Report Bug</a>
     ·
-    <a href="https://github.com/giterdun345/Emaillead_Management/issues">Request Feature</a>
+    <a href="https://github.com/giterdun345/Email_leadManagement/issues">Request Feature</a>
   </p>
 </p>
 
@@ -65,59 +59,57 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`giterdun345`, `Emaillead_Management`, `twitter_handle`, `email`, `project_title`, `project_description`
+![Screenshot](Lem_Pattern.png)
 
 ### Built With
-
-- []()
-- []()
-- []()
+<ul>
+  <li>React</li>
+  <li>Django</li>
+  <li>Django Rest Framework</li>
+  <li>SQLite (current) or PostgreSQL (maybe?)</li>
+  <li>AWS</li>
+  <li>Ant Design</li>
+  <li>Much More...</li>
+</ul>
 
 <!-- GETTING STARTED -->
-
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
+RealEmail API Key
 
 ### Installation
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/giterdun345/Emaillead_Management.git
+   git clone https://github.com/giterdun345/Email_leadManagement.git
    ```
-2. Install NPM packages
+2. Install NPM packages frontend
    ```sh
    npm install
    ```
-
+3. pip install requirements.txt
+   
 <!-- USAGE EXAMPLES -->
-
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+Details to come soon
 
 <!-- ROADMAP -->
 
 ## Roadmap
 
-See the [open issues](https://github.com/giterdun345/Emaillead_Management/issues) for a list of proposed features (and known issues).
+<ul>
+  <li>Implement multithreading for email validation</li>
+  <li>Add view and component for the scraper (scrapes a given website for emails)</li>
+  <li>Finish email setup with SES and SNS</li> 
+  <li>Need some HTML templates for the emails to be sent</li>
 
-<!-- CONTRIBUTING -->
+ </ul>
+ 
+  See the [open issues](https://github.com/giterdun345/Email_leadManagement/issues) for a list of proposed features (and known issues).
+
 
 ## Contributing
 
@@ -141,15 +133,14 @@ Distributed under the CC License. See `LICENSE` for more information.
 
 John Ketterer - johnmketterer@gmail.com
 
-Project Link: [https://github.com/giterdun345/Emaillead_Management](https://github.com/giterdun345/Emaillead_Management)
+Project Link: [https://github.com/giterdun345/Email_leadManagement](https://github.com/giterdun345/Emaillead_Management)
 
 <!-- ACKNOWLEDGEMENTS -->
 
 ## Acknowledgements
-
-- []()
-- []()
-- []()
+<ul>
+  <li>Big shout out to Ant Design! Thank you for letting me focus more on the logic rather than UI</li>
+ </ul>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
