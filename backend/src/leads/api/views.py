@@ -7,7 +7,7 @@ from rest_framework_bulk import (
     BulkModelViewSet
 )
 
-# viewsets.ModelViewSet, removed for bulk
+# viewsets.ModelViewSet, removed for bulk upload operations
 class TargetView(BulkModelViewSet):
   """Retrieves all of the targets for upload from scraper and for additional use in gui"""
   queryset= Target.objects.all()
