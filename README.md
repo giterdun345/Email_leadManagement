@@ -2,18 +2,19 @@
 
 <!-- <img src="Lem_Pattern.png" alt='Lem Pattern'> -->
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![Contributors][contributors-shield]][https://github.com/giterdun345/EmailleadManagement/contributors/]
+[![Forks][forks-shield]][https://github.com/giterdun345/EmailleadManagement/forks/]
+[![Stargazers][stars-shield]][https://github.com/giterdun345/EmailleadManagement/stargazers]
+[![Issues][issues-shield]][https://github.com/giterdun345/EmailleadManagement/issues/]
+[![MIT License][license-shield]][https://github.com/giterdun345/EmailleadManagement/blob/master/LICENSE]
+[![LinkedIn][linkedin-shield]][https://linkedin.com/in/jm-ketterer]
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <a href="https://github.com/giterdun345/EmailleadManagement">
-    <img src="Lem_Pattern" alt="pattern" width="250" height="250">
+    ![alt text](https://github.com/giterdun345/EmailleadManagement/blob/master/LemPattern.png?raw=true)
+
   </a>
 
   <h3 align="center">Lead and Email Management</h3>
