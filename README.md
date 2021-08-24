@@ -65,7 +65,7 @@
   <li>React</li>
   <li>Django</li>
   <li>Django Rest Framework</li>
-  <li>SQLite (current) or PostgreSQL (maybe?)</li>
+  <li>SQLite (current) or PostgreSQL (maybe for production?)</li>
   <li>AWS</li>
   <li>Ant Design</li>
   <li>Much More...</li>
@@ -75,7 +75,7 @@
 
 ## Getting Started
 
-To get a local copy up and running follow these simple steps.
+To get a local copy up and running contact me if you need help.
 
 ### Prerequisites
 
@@ -88,11 +88,6 @@ AWS Account
    ```sh
    git clone https://github.com/giterdun345/Email_leadManagement.git
    ```
-2. Install NPM packages frontend
-   ```sh
-   npm install
-   ```
-3. pip install requirements.txt
 
 <!-- USAGE EXAMPLES -->
 
@@ -102,21 +97,20 @@ Dashboard - provides bounce rate and complaints from SNS, emails sent, emails op
 Add Target - Manual input of a single investor
 Upload CSV- Has ability to drag and drop multiple csv files to db; <br/>
 Only required Full Name and Company<br/>
--Validate Email button can be clicked to check if the email exists. There are ten variations that are checked:
+-Validate Email button can be clicked to check if the email exists. This uses a rotating proxy server scraped from a website providing IP addresses every 10 minutes. The emailvalidation part needs multithreading! There are ten variations that are checked:
 
 <ol>
-<li>1st combined no seperator </li>
-<li>2nd combined seperator as dot</li>
-<li>3rd reverse lname fname</li>
-<li>4th reverse lname fname with dot </li>
-<li>5th fname first letter with lastname</li>
-<li>6th fname letter with lastname dot seperated</li>
-<li>7th lname letter with fname</li>
-<li>8th lname letter with fname with dot seperator</li>
-<li>9th variation if all else fails info@domain can be used if it exists</li>
+<li> name combined no seperator </li>
+<li> name combined seperator as dot</li>
+<li> reverse lname fname</li>
+<li> reverse lname fname with dot </li>
+<li> fname first letter with lastname</li>
+<li> fname letter with lastname dot seperated</li>
+<li> lname letter with fname</li>
+<li> lname letter with fname with dot seperator</li>
+<li> the variation if all else fails info@domain can be used if it exists</li>
 </ol>
-This uses a rotating proxy server scraped from a website providing IP addresses
-every 10 minutes. This part needs multithreading!
+
 </br>
 Target list- gives abilility to edit or delete investors in the list
 <ol>
