@@ -1,7 +1,5 @@
 # Lead and Email Management / CRM
 
-<!-- <img src="Lem_Pattern.png" alt='Lem Pattern'> -->
-
 [![Contributors](https://img.shields.io/github/contributors/giterdun345/Email_leadManagement.svg)](https://github.com/giterdun345/Email_leadManagement/contributors/)
 [![Forks](https://img.shields.io/github/forks/giterdun345/Email_leadManagement)](https://github.com/giterdun345/Email_leadManagement/forks/)
 [![Stargazers](https://img.shields.io/github/stars/giterdun345/Email_leadManagement?style=social&label=Star&maxAge=2592000)](https://github.com/giterdun345/Email_leadManagement/stargazers)
@@ -62,6 +60,7 @@
 ![Screenshot](Lem_Pattern.png)
 
 ### Built With
+
 <ul>
   <li>React</li>
   <li>Django</li>
@@ -73,12 +72,15 @@
 </ul>
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
+
 RealEmail API Key
+AWS Account
 
 ### Installation
 
@@ -91,10 +93,43 @@ RealEmail API Key
    npm install
    ```
 3. pip install requirements.txt
-   
+
 <!-- USAGE EXAMPLES -->
+
 ## Usage
-Details to come soon
+
+Dashboard - provides bounce rate and complaints from SNS, emails sent, emails opened
+Add Target - Manual input of a single investor
+Upload CSV- Has ability to drag and drop multiple csv files to db; <br/>
+Only required Full Name and Company<br/>
+-Validate Email button can be clicked to check if the email exists. There are ten variations that are checked:
+
+<ol>
+<li>1st combined no seperator </li>
+<li>2nd combined seperator as dot</li>
+<li>3rd reverse lname fname</li>
+<li>4th reverse lname fname with dot </li>
+<li>5th fname first letter with lastname</li>
+<li>6th fname letter with lastname dot seperated</li>
+<li>7th lname letter with fname</li>
+<li>8th lname letter with fname with dot seperator</li>
+<li>9th variation if all else fails info@domain can be used if it exists</li>
+</ol>
+This uses a rotating proxy server scraped from a website providing IP addresses
+every 10 minutes. This part needs multithreading!
+</br>
+Target list- gives abilility to edit or delete investors in the list
+<ol>
+<li>With Emails- investors whose emails have been identified; includes a table with Name, Company, Category, Email and Email Confirmed(Boolean)</li>
+<li>Without Emails- investors without an email; includes a table with Full name, company category, Personal website and social media sites to aid in the search of the email. </li>
+</ol>
+
+Emailed- provides a table for emails which have been sent.
+Connections- connects to google calenders to set appointments and keep track all in one place.
+<br/>
+New Link to be added shortly- Given a website url, could be multiple from a CSV file, there is a scraper in the sandbox folder that will crawl the domain and extract all email addresses located on the page. We can possible extract the name from the email or edit manually. Any thoughts?
+<br/>
+Any other features you would like to see or add to? Please link up!!
 
 <!-- ROADMAP -->
 
@@ -105,11 +140,9 @@ Details to come soon
   <li>Add view and component for the scraper (scrapes a given website for emails)</li>
   <li>Finish email setup with SES and SNS</li> 
   <li>Need some HTML templates for the emails to be sent</li>
-
- </ul>
+</ul>
  
   See the [open issues](https://github.com/giterdun345/Email_leadManagement/issues) for a list of proposed features (and known issues).
-
 
 ## Contributing
 
@@ -138,6 +171,7 @@ Project Link: [https://github.com/giterdun345/Email_leadManagement](https://gith
 <!-- ACKNOWLEDGEMENTS -->
 
 ## Acknowledgements
+
 <ul>
   <li>Big shout out to Ant Design! Thank you for letting me focus more on the logic rather than UI</li>
  </ul>
