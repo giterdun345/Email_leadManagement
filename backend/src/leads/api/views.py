@@ -19,7 +19,7 @@ class WithEmailViewSet(viewsets.ModelViewSet):
   serializer_class= TargetSerializer
   
 class WithoutEmailViewSet(viewsets.ModelViewSet):
-  """Retrieves all of the targets without an email adress for gui"""
+  """Retrieves all of the targets without an email address for gui"""
   queryset= Target.objects.filter(email__exact = '')
   serializer_class= TargetSerializer
 

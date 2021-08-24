@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Target(models.Model):
     name = models.CharField(max_length=50, unique=True)
     company = models.CharField(max_length=50, blank=True)
