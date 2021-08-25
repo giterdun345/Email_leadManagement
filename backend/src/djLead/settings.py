@@ -1,7 +1,8 @@
 """Settings file """
-
+import environ
 from pathlib import Path
 
+env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -10,11 +11,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-=-3dwexcyfmynqxto#yy_n@g%m-fh!yz()-#f1=l786)*r=1i-'
+# SECRET_KEY = env('DJANGO_SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DJANGO_DEBUG", True)
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    # If Debug is True, allow all.
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['example.com'])
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -24,11 +32,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    # third party
     'rest_framework',
     'corsheaders',
-    
+    'post-office',
+    # project apps
     'leads',
+    'email_aws',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +81,13 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# Databases
+# DATABASES = {
+#     "default": env.db("DATABASE_URL")
+# }
+# DATABASES["default"]["ATOMIC_REQUESTS"] = True
+# DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -90,6 +107,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
+# # User Model Definition
+# AUTH_USER_MODEL = 'usermodel.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -112,6 +134,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Admin, never have admin on the default URL. With DJANGO_ADMIN_URL env variable 
+# you will be able to set it different for every environment: production, staging, 
+# but leave default for local development.
+ADMIN_URL = env('DJANGO_ADMIN_URL', default='admin/')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -128,3 +155,48 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Redis Settings
+# REDIS_URL = env('REDIS_URL', default=None)
+
+# if REDIS_URL:
+#     CACHES = {
+#         "default": env.cache('REDIS_URL')
+#     }
+
+# That's a very simple logging, that should output everything 
+# to console from all modules with level of DEBUG, which means output everything it can.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler'
+        },
+    },
+    'loggers': {
+        '': {  # 'catch all' loggers by referencing it with the empty string
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
+
+EMAIL_BACKEND = 'post_office.EmailBackend'
+
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='yes_johnny@protonmail.com')
+
+POST_OFFICE = {
+    'BACKENDS': {
+        'default': 'django_ses.SESBackend',
+    },
+    'DEFAULT_PRIORITY': 'now',
+}
+
+################### TBD ######################################
+# AWS_SES_REGION_NAME = env('AWS_SES_REGION_NAME', default='us-east-1')
+# AWS_SES_REGION_ENDPOINT = env('AWS_SES_REGION_ENDPOINT', default='email.us-east-1.amazonaws.com')
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY

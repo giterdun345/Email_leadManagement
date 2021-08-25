@@ -8,6 +8,12 @@ node_modules
 /build
 # misc
 .DS_Store
+env/
+venv/
+.idea
+.env
+**/__pycache__/
+.env 
 .env.local
 .env.development.local
 .env.test.local
