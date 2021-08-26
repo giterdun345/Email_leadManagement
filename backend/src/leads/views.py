@@ -162,6 +162,7 @@ class ValidateView(SingleObjectMixin, View):
           try:
             response = real_response.get(
             "https://isitarealemail.com/api/email/validate",
+            # REAL EMAIL WAS USED FOR THE ABILITY TO CHANGE PROXIES AND NOT TAINT ONES OWN IP ADDRESS 
             params = {'email': email_address},
             proxies= {
               'https': 'https://' + new_proxy

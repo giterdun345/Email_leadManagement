@@ -35,10 +35,8 @@ INSTALLED_APPS = [
     # third party
     'rest_framework',
     'corsheaders',
-    'post-office',
     # project apps
     'leads',
-    'email_aws',
 ]
 
 MIDDLEWARE = [
