@@ -3,18 +3,21 @@ This will put their full name and domain into ten different variations to
 see if an email exists. Slow but mimicks human behavior. Each check utilizes
 a proxy to reduce risk of limit on RealEmail API. Proxy Scraper scrapes 100 fresh 
 IP addresses and is rotated through out each email variation check."""
+import json
+from random import choice
+from uuid import uuid4
 
 import requests
-from bs4 import BeautifulSoup as bs
-from random import choice
-
-from django.views import View
-from django.http import JsonResponse
-from django.views.generic.detail import SingleObjectMixin
-import json
-from selenium import webdriver
-from time import sleep
 import urllib3
+from bs4 import BeautifulSoup as bs
+from django.http import JsonResponse
+from django.views import View
+from django.views.generic.detail import SingleObjectMixin
+from selenium import webdriver
+
+from leads.caches import CheckEmailExistCache
+from leads.tasks import check_email_exist_task
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
  
 from requests.adapters import HTTPAdapter
@@ -87,49 +90,6 @@ def scrape_proxies_requests():
   
   return complete_ip
 
-def variation_list(target):
-  """Outputs 8 variations to be used in testing if email exists, domain and
-  full name are required from the uploaded input
-  INPUT@DOMAIN tbd based on name input into the db"""
-
-  nameArr = target['name'].lower().split(' ')      
-  atDomain = '@' + target['domain']
-  # 1st combined no seperator 
-  firstVariation = ''.join(nameArr) + atDomain
-  # 2nd combined seperator as dot  
-  secondVariation = '.'.join(nameArr) + atDomain
-  # 3rd reverse lname fname 
-  thirdVariation = ''.join(nameArr[::-1]) + atDomain
-  # 4th reverse lname fname with dot 
-  fourthVariation = '.'.join(nameArr[::-1]) + atDomain
-  # 5th fname first letter with lastname 
-  fnameLetter = nameArr[0][0]
-  fifthVariation = fnameLetter + nameArr[1] + atDomain
-  # 6th fname letter with lastname dot seperated 
-  sixthVariation = fnameLetter + '.' + nameArr[1] + atDomain
-  # 7th lname letter with fname 
-  lnameLetter = nameArr[1][0]
-  seventhVariation = lnameLetter + nameArr[0] + atDomain
-  # 8th lname letter with fname with dot seperator
-  eigthVariation = lnameLetter + '.' + nameArr[0] + atDomain
-  # 9th variation if all else fails info@domain can be used if it exists
-  ninthVariation = nameArr[0] + atDomain
-
-  variationObj= {
-    1: firstVariation,
-    2: secondVariation, 
-    3: thirdVariation,
-    4: fourthVariation,
-    5: fifthVariation,
-    6: sixthVariation,
-    7: seventhVariation,
-    8: eigthVariation,
-    9: ninthVariation, 
-    10: 'info' + atDomain
-  }
-
-  return variationObj
-
 class ValidateView(SingleObjectMixin, View):
   """Accepts Full Name, Domain, and Email Address from uploadCSV.js
      Rotates proxies with 100 updated IP addresses and uses
@@ -138,101 +98,47 @@ class ValidateView(SingleObjectMixin, View):
      causing issues with max tries exceeded XXXXXXX
   """
   def post(self, request):
+    tracking_id = uuid4()
     unicode_data = request.body.decode('utf-8')
     targetData = json.loads(unicode_data)
     proxies = scrape_proxies()
-    # will return end results in JSON response to client 
-    end_results = []
+    # will return end results in JSON response to client
 
+    index = 0
     for target in targetData:
       if target['name'] == '':
         print('Completed')
         break
-
+      new_proxy = choice(proxies)
 # problem with some firewall blocking the connections during the TLS handshake? 
 # multi threading can be used for quicker performance
-      variationObj = variation_list(target)
-      for email_address in variationObj.values():
-        # make requests to real email import requests
-        running_check = True
-        while running_check: 
-          new_proxy = choice(proxies)
-          print('Checking: ' + email_address + ' with ' + new_proxy)
+      check_email_exist_task.delay(tracking_id, index, target, new_proxy)  # Add celery task
+      index += 1
 
-          try:
-            response = real_response.get(
-            "https://isitarealemail.com/api/email/validate",
-            params = {'email': email_address},
-            proxies= {
-              'https': 'https://' + new_proxy
-            }, 
-            headers = {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0',
-              'Referrer-Policy': 'strict-origin-when-cross-origin',
-              'Accept': '*/*', 
-            },
-            timeout= 20
-            )
-            print('Running....')
-          except:
-            print('Excepted')
-            running_check = False
+    cache = CheckEmailExistCache(tracking_id)
+    cache.set_total(index)
+
+    return JsonResponse({
+      'tracking_id': tracking_id,
+      'total_task': index
+    }, safe=False)
 
 
-          if response.status_code == 200:
-            status = response.json()['status']
-            # sleep(20)
-            if status == "valid":
-              print("is valid: ", email_address)
-              if { 
-                  "name":     target['name'],
-                  "company":  target['company'],
-                  "category": target['category'],
-                  "email":    email_address,
-                  "email_confirmed": True,
-                 } not in end_results: 
-                end_results.append({ 
-                  "name":     target['name'],
-                  "company":  target['company'],
-                  "category": target['category'],
-                  "email":    email_address,
-                  "email_confirmed": True,
-              })
-              running_check = False
+class ValidateProgressView(SingleObjectMixin, View):
+  def post(self, request):
+    tracking_key = request.body.decode('utf-8')
 
-            elif status == "invalid":
-              print("is invalid: ", email_address)
-              if { 
-                  "name":     target['name'],
-                  "company":  target['company'],
-                  "category": target['category'],
-                  "email":    ''
-              } not in end_results:
-                  end_results.append({ 
-                  "name":     target['name'],
-                  "company":  target['company'],
-                  "category": target['category'],
-                  "email":    ''
-                  })
-              running_check = False
+    cache = CheckEmailExistCache(tracking_key)
+    total_task = cache.get_total()
+    done_idx = cache.get_done_index()
+    done = len(done_idx) if done_idx else 0
+    result = cache.get_result() or []
 
-            else:
-              print("is unknown: ", email_address)
-              if { 
-                  "name":     target['name'],
-                  "company":  target['company'],
-                  "category": target['category'],
-                  "email":    ''
-              } not in end_results:
-                  end_results.append({ 
-                  "name":     target['name'],
-                  "company":  target['company'],
-                  "category": target['category'],
-                  "email":    ''
-                  })
-              running_check = False
-
-        sleep(5)
-
-    print(end_results)
-    return JsonResponse(end_results, safe= False)
+    return JsonResponse({
+      'progress': {
+        'total': total_task,
+        'done': done,
+        'done_idx': done_idx or [],
+      },
+      'result': result,
+    })
