@@ -1,11 +1,9 @@
 aiodns==3.0.0
-aiohttp==3.7.4.post0
 asgiref==3.4.1
 astroid==2.6.2
 async-timeout==3.0.1
 asyncio==3.4.3
 atomicwrites==1.4.0
-attrs==21.2.0
 autopep8==1.5.7
 beautifulsoup4==4.9.3
 boto3==1.18.28
@@ -40,7 +38,6 @@ multidict==5.1.0
 packaging==21.0
 pep8==1.7.1
 pluggy==0.13.1
-proxybroker==0.3.2
 py==1.10.0
 py3-validate-email==1.0.1
 pycares==4.0.0
@@ -62,3 +59,7 @@ typing-extensions==3.10.0.0
 urllib3==1.25.8
 wrapt==1.12.1
 yarl==1.6.3
+celery==4.3.0
+flower==0.9.3
+redis==3.5.3
+django-redis==5.0.0

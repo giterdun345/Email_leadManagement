@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
+from leads.views import ValidateProgressView
 from leads.views import ValidateView
 from django.views.decorators.csrf import csrf_exempt
 
@@ -23,5 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('leads.api.urls')),
-    path('validation/', csrf_exempt(ValidateView.as_view()))
+    path('validation/', csrf_exempt(ValidateView.as_view())),
+    path('validation-progress/', csrf_exempt(ValidateProgressView.as_view()))
 ]
